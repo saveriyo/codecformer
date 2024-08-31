@@ -35,7 +35,6 @@ import sys
 
 import numpy as np
 import torch
-import torch.nn.functional as F
 import torchaudio
 from hyperpyyaml import load_hyperpyyaml
 from tqdm import tqdm
@@ -127,6 +126,7 @@ class Separation(sb.Brain):
             mix_w = self.hparams.dacmodel.get_quantized_features(mix_w)[0]
 
         est_mask = self.hparams.sepmodel(mix_w)
+
         mix_w = torch.stack([mix_w] * self.hparams.num_spks)
         mix_s = mix_w * est_mask
         # mix_s = est_mask
