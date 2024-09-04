@@ -136,13 +136,13 @@ block: !new:speechbrain.lobes.models.dual_path.SBTransformerBlock
   use_positional_encoding: true
   norm_before: true
 
-dacmodel: !new:speechbrain.lobes.models.codecformer3.DACWrapper
+dacmodel: !new:speechbrain.lobes.models.codecformer.DACWrapper
   input_sample_rate: 8000
   DAC_model_path:   #if None, will download model from huggingface. Otherwise, path to checkpoint should be provided for the model to be loaded. Model has been hardcoded to download the 16khz model. please modify the code if you need another model.
   DAC_sample_rate: 16000
   Freeze: true
 
-sepmodel: !new:speechbrain.lobes.models.codecformer3.simpleSeparator2
+sepmodel: !new:speechbrain.lobes.models.codecformer.simpleSeparator2
         # dacmodel: !ref <dacmodel>
   num_spks: 2
   channels: 1024
