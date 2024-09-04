@@ -33,6 +33,12 @@ train_data: !ref <save_folder>/wsj_tr.csv
 valid_data: !ref <save_folder>/wsj_cv.csv
 test_data: !ref <save_folder>/wsj_tt.csv
 skip_prep: false
+# optionally specify the number of files to use for training, validation, and testing
+# comment out to use all files
+# file_limits: 
+#   train: 100
+#   valid: 10
+#   test: 10
 
 
 # Experiment params
