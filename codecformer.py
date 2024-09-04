@@ -257,7 +257,6 @@ class WavTokenizerWrapper:
         original_length = x.shape[-1]
 
         # Ensure the tensor has the right format
-        # with torch.no_grad():
         x = self.convert_audio(x, self.input_sample_rate, self.tokenizer_sample_rate, 1)
     
         # If you want to remove batch and channel dimensions for the audio data tensor
@@ -275,37 +274,30 @@ class WavTokenizerWrapper:
         '''
         # Ensure the tensor has 3 dimensions [Batch, Channels, Time]
         if x.ndim == 2:
-            x = x.unsqueeze(1)  # Add a channel dimension if missing
+            x = x.unsqueeze(1)
 
-        # Directly feed the encoded features to the quantizer
-        # with torch.no_grad():
         q_res = self.model.feature_extractor.encodec.quantizer.infer(x, frame_rate=self.model.feature_extractor.frame_rate, bandwidth=self.model.feature_extractor.bandwidths[0])
         quantized = q_res.quantized
         codes = q_res.codes
         commit_loss = q_res.penalty
 
-        # Return the outputs to match the format expected by the rest of your code
         return quantized, codes, None, commit_loss, None
 
     def get_decoded_signal(self, features, original_length):
         '''
         Decodes the features back to the audio signal.
         '''
-        # Decode the features to get the waveform
         bandwidth_id = torch.tensor([0]).to(features.device)
 
-        # with torch.no_grad():
         x = self.model.backbone(features, bandwidth_id=bandwidth_id)
         y_hat = self.model.head(x)
 
         # Ensure the output has three dimensions [Batch, Channels, Time] before resampling
         if y_hat.ndim == 2:
-            y_hat = y_hat.unsqueeze(1)  # Add a channel dimension if it's missing
+            y_hat = y_hat.unsqueeze(1) 
 
-        # Resample the decoded signal back to the original sampling rate
         y_hat_resampled = self.resample_audio(y_hat, "org")
 
-        # Ensure the output shape matches the original length
         if y_hat_resampled.shape[-1] != original_length:
             T_origin = original_length
             T_est = y_hat_resampled.shape[-1]
