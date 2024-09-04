@@ -143,6 +143,7 @@ sepmodel: !new:speechbrain.lobes.models.codecformer.simpleSeparator2
   channels: 512 ## Note needs to be 512 for WavTokenizer and 1024 for DAC
   block: !ref <block>
   block_channels: 256
+  activation: !new:torch.nn.LeakyReLU
 
 optimizer: !name:torch.optim.Adam
   lr: !ref <lr>
